@@ -1,6 +1,7 @@
 const path = require("path")
 const { GraphQLClient } = require("graphql-request")
 const parseGHUrl = require("parse-github-url")
+const { graphql } = require("@octokit/graphql")
 // MD posts
 // module.exports.onCreateNode = ({ node, actions }) => {
 //   const { createNodeField } = actions
@@ -31,6 +32,30 @@ exports.onCreateNode = async ({
   }
 }
 
+
+// Standard initial cod- did not work
+// const { repository } = await graphql(
+//   `
+//   {
+//     repository(owner:"octokit", name: "graphql.js){
+//       issues(last: 3) {
+//         edges {
+//           node {
+//             title
+//           }
+//         }
+//       }
+//     }
+//   }
+//   `,
+//   {
+//     headers: {
+//       authorization: "f4c7f1c364788306e41a0112fe245edaa0529193 ",
+//     },
+//   }
+// )
+// console.log("Trying octokit: " + repository)
+
 // Contentful Github repos
 // Gather data
 const githubApiClient = process.env.GITHUB_TOKEN
@@ -41,7 +66,7 @@ const githubApiClient = process.env.GITHUB_TOKEN
     })
   : console.log("GITHUB TOKEN NOT FOUND!")
 
-exports.onCreateNode = async ({ node, actions }) => {
+exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
   const { createNode, createNodeField } = actions
 
   //console.log(JSON.stringify(node, undefined, 4))
@@ -71,6 +96,7 @@ exports.onCreateNode = async ({ node, actions }) => {
               }
             }
           `)
+          console.log("owner is" + owner)
           return response
         } catch (error) {
           console.log("Cannot get data for Github repo: ", name)
@@ -82,6 +108,11 @@ exports.onCreateNode = async ({ node, actions }) => {
       const repoData = await (repoMeta
         ? getGithubData(repoMeta.owner, repoMeta.name)
         : null)
+      console.log("repoMeta is" + repoMeta)
+      console.log(JSON.stringify(repoMeta))
+      console.log("repoMeta.owner is " + repoMeta.owner)
+      console.log("repoMeta.name is" + repoMeta.name)
+      console.log("repoData is" + repoData)
 
       //Add field with data to repo's Node
 
