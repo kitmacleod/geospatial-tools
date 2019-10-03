@@ -20,18 +20,17 @@ const { graphql } = require("@octokit/graphql")
 // Trying to see node types
 // Using https://github.com/gatsbyjs/gatsby/issues/17624
 
-exports.onCreateNode = async ({
-  node,
-  actions: { createNode },
-  createContentDigest,
-  cache,
-}) => {
-  console.log(node.internal.type)
-  if (node.internal.type === "GraphQLSource") {
-    console.log(node)
-  }
-}
-
+// exports.onCreateNode = async ({
+//   node,
+//   actions: { createNode },
+//   createContentDigest,
+//   cache,
+// }) => {
+//   console.log(node.internal.type)
+//   if (node.internal.type === "GraphQLSource") {
+//     console.log(node)
+//   }
+// }
 
 // Standard initial cod- did not work
 // const { repository } = await graphql(
@@ -51,7 +50,6 @@ exports.onCreateNode = async ({
 //   {
 //     headers: {
 //       authorization: "f4c7f1c364788306e41a0112fe245edaa0529193 ",
-//     },
 //   }
 // )
 // console.log("Trying octokit: " + repository)
@@ -65,6 +63,25 @@ const githubApiClient = process.env.GITHUB_TOKEN
       },
     })
   : console.log("GITHUB TOKEN NOT FOUND!")
+
+// Try Gatsby-node code //
+//This did not work as no 'node'
+
+// const contentfulToolNode = node.children
+//   .map(childID => getNode(childID))
+//   .find(node => node.internal.type === "ContentfulTool")
+// console.log("contentfulToolNode " + contentfulToolNode)
+// console.log(JSON.stringify(contentfulToolNode, undefined, 4))
+
+// Try standard 'exports.onCreateNode
+
+
+// exports.onCreateNode = async ({ node, actions: { createNode }, createContentDigest,   cache}) => {
+//   if (node.internal.type === "ContentfulTool") {
+//     console.log(node)
+
+//   }
+// }
 
 exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
   const { createNode, createNodeField } = actions
@@ -103,6 +120,7 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
           return null
         }
       }
+
       // Try changing node.github to node.slug, as this is the GH url in Tool content model
       const repoMeta = node.slug ? parseGHUrl(node.slug) : null
       const repoData = await (repoMeta
@@ -113,6 +131,8 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
       console.log("repoMeta.owner is " + repoMeta.owner)
       console.log("repoMeta.name is" + repoMeta.name)
       console.log("repoData is" + repoData)
+
+      // Try some manual repoData code
 
       //Add field with data to repo's Node
 
