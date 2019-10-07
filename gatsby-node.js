@@ -1,92 +1,19 @@
 const path = require("path")
 const { GraphQLClient } = require("graphql-request")
 const parseGHUrl = require("parse-github-url")
-const { graphql } = require("@octokit/graphql")
-// MD posts
-// module.exports.onCreateNode = ({ node, actions }) => {
-//   const { createNodeField } = actions
-
-//   if (node.internal.type === "MarkdownRemark") {
-//     const slug = path.basename(node.fileAbsolutePath, ".md")
-
-//     createNodeField({
-//       node,
-//       name: "slug",
-//       value: slug,
-//     })
-//   }
-// }
-
-// Trying to see node types
-// Using https://github.com/gatsbyjs/gatsby/issues/17624
-
-// exports.onCreateNode = async ({
-//   node,
-//   actions: { createNode },
-//   createContentDigest,
-//   cache,
-// }) => {
-//   console.log(node.internal.type)
-//   if (node.internal.type === "GraphQLSource") {
-//     console.log(node)
-//   }
-// }
-
-// Standard initial cod- did not work
-// const { repository } = await graphql(
-//   `
-//   {
-//     repository(owner:"octokit", name: "graphql.js){
-//       issues(last: 3) {
-//         edges {
-//           node {
-//             title
-//           }
-//         }
-//       }
-//     }
-//   }
-//   `,
-//   {
-//     headers: {
-//       authorization: "f4c7f1c364788306e41a0112fe245edaa0529193 ",
-//   }
-// )
-// console.log("Trying octokit: " + repository)
 
 // Contentful Github repos
 // Gather data
 const githubApiClient = process.env.GITHUB_TOKEN
   ? new GraphQLClient("https://api.github.com/graphql", {
       headers: {
-        authorization: "Bearer $ {process.env.GITHUB_TOKEN}",
+        authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
       },
     })
   : console.log("GITHUB TOKEN NOT FOUND!")
 
-// Try Gatsby-node code //
-//This did not work as no 'node'
-
-// const contentfulToolNode = node.children
-//   .map(childID => getNode(childID))
-//   .find(node => node.internal.type === "ContentfulTool")
-// console.log("contentfulToolNode " + contentfulToolNode)
-// console.log(JSON.stringify(contentfulToolNode, undefined, 4))
-
-// Try standard 'exports.onCreateNode
-
-
-// exports.onCreateNode = async ({ node, actions: { createNode }, createContentDigest,   cache}) => {
-//   if (node.internal.type === "ContentfulTool") {
-//     console.log(node)
-
-//   }
-// }
-
 exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
   const { createNode, createNodeField } = actions
-
-  //console.log(JSON.stringify(node, undefined, 4))
 
   // Fetch additional data from Github for repos fetch from CMS
 
@@ -126,11 +53,14 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
       const repoData = await (repoMeta
         ? getGithubData(repoMeta.owner, repoMeta.name)
         : null)
+
+      //  Checking that repoMeta and repoData can be accessed from Contentful and Github
       console.log("repoMeta is" + repoMeta)
       console.log(JSON.stringify(repoMeta))
       console.log("repoMeta.owner is " + repoMeta.owner)
       console.log("repoMeta.name is" + repoMeta.name)
       console.log("repoData is" + repoData)
+      console.log(JSON.stringify(repoData))
 
       // Try some manual repoData code
 
@@ -140,13 +70,6 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
         node,
         name: "githubData",
         value: repoData,
-      })
-
-      // Test to see if working THIS HAS WORKED
-      createNodeField({
-        node,
-        name: "test1",
-        value: "testText",
       })
     }
   }
