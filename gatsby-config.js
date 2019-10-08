@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
-    title: "Full-Stack Bootcamp",
-    author: "Andrew Mead",
+    title: "Geospatial Tools",
+    author: "Kit Macleod",
   },
   plugins: [
     "gatsby-plugin-react-helmet",

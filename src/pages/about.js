@@ -8,11 +8,10 @@ const AboutPage = () => {
   return (
     <Layout>
       <Head title="About" />
-      <h1>About Me</h1>
-      <p>I currently teach full-time on Udemy.</p>
-      <p>
-        <Link to="/contact">Want to work with me? Reach out.</Link>
-      </p>
+      <h1>Why have we created this resource?</h1>
+      <p>There are an increasing number of available geospatial tools and technologies. Many of these tools and technologies are free and open source.
+      We wanted to collate available tools and technologies.</p>
+     
     </Layout>
   )
 }

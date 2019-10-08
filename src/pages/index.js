@@ -8,12 +8,13 @@ const IndexPage = () => {
   return (
     <Layout>
       <Head title="Home" />
-      <h1>Hello.</h1>
-      <h2>
-        I'm Andrew, a full-stack developer living in beautiful Philadelphia.
-      </h2>
+
       <p>
-        Need a developer? <Link to="/contact">Contact me.</Link>
+        You would like to learn about exciting developments in geospatial data,
+        tools and technologies but do not know where to start searching for
+        them. Luckily for you there are a wide range of online resources. We are
+        here to help you find these resources and use them. Please note that
+        this site is under development.
       </p>
     </Layout>
   )
