@@ -21,6 +21,13 @@ module.exports = {
         path: `${__dirname}/src/`,
       },
     },
+    {
+      resolve: "gatsby-source-filesystem",
+      options: {
+        name:"ncms",
+        path: `${__dirname}/content/blog/`,
+      },
+    },
     "gatsby-plugin-sharp",
     {
       resolve: "gatsby-transformer-remark",
