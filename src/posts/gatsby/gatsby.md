@@ -1,6 +1,7 @@
 ---
 title: "The Great Gatsby Bootcamp"
 date: "2019-04-04"
+owner: Test TGGB
 ---
 
 I just launched a new bootcamp!

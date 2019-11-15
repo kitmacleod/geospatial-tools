@@ -24,9 +24,9 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
   switch (node.internal.type) {
     // This is the type of  node (similar to node.internal.type==="GraphQLSource")
     case "ContentfulTool": {
-      /**
-       * Add field with Github Data to tool's Node
-       */
+      
+       // Add field with Github Data to tool's Node
+    
       async function getGithubData(owner, name) {
         try {
           const response = await githubApiClient.request(`
@@ -40,7 +40,7 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
               }
             }
           `)
-          console.log("owner is" + owner)
+          console.log("owner is " + owner)
           return response
         } catch (error) {
           console.log("Cannot get data for Github repo: ", name)
@@ -71,8 +71,55 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
         name: "githubData",
         value: repoData,
       })
-    }
+    
   }
+    
+  //  Next case: add Netlify CMS tool, copied from above
+    case "MarkdownRemark": {
+
+
+
+      async function getGithubData(owner, name) {
+        try {
+          const response = await githubApiClient.request(`
+          query {
+            repository(owner:"${owner}", name:"${name}") {
+              name
+              stargazers {
+                totalCount
+              }
+              createdAt
+            }
+          }
+          `)
+          console.log("ncms owner is " + owner)
+          return response
+        } catch(error) {
+          console.log("Cannot get data for ncms Github repo: ", name)
+          return null
+        }
+      }
+
+      const repoMeta = node.slug ? parseGHUrl(node.slug): null
+      const repoData = await(repoMeta
+        ? getGithubData(repoMeta.owner, repoMeta.name)
+        : null)
+      // Checking that repoMeta and repoData can be accessed by NetlifyCMS and Github
+      console.log("ncms repoMeta is" + repoMeta)
+      console.log(JSON.stringify(repoMeta))
+      console.log("ncms repoMeta.owner is " + repoMeta.owner)
+      console.log("ncms repoMeta.name is" + repoMeta.name)
+      console.log("ncms repoData is" + repoData)
+      console.log(JSON.stringify(repoData))
+
+      //Add field with data to repo's node
+      createNodeField({
+        node,
+        name: "githubData",
+        value: repoData,
+      })
+    }
+}
 }
 
 exports.createPages = async ({ graphql, actions }) => {
