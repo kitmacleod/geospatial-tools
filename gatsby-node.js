@@ -97,7 +97,9 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
         }
       }
       // This is returning null
-      const repoMeta = node.frontmatter.slug ? parseGHUrl(node.frontmatter.slug) : null
+      const repoMeta = node.frontmatter.slug
+        ? parseGHUrl(node.frontmatter.slug)
+        : null
       console.log("The repoMeta node is " + JSON.stringify(node))
       console.log("The node.slug is " + node.frontmatter.slug)
 
@@ -126,6 +128,16 @@ exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions
   // Create pages here using data fetched during 'onCreateNode'
 }
+
+// //MarkdownTools-following AM
+// module.exports.onCreateNode = ({ node, actions }) => {
+//   const { createNodeField } = actions
+
+//   if (node.internal.type === "MarkdownRemark") {
+//     const slugTool = path.basename(node.fileAbsolutePath, ".md")
+//     console.log("@@@@@@@@@@@@", slugTool)
+//   }
+// }
 
 // Contentful blog
 module.exports.createPages = async ({ graphql, actions }) => {
