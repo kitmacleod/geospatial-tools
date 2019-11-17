@@ -2,6 +2,8 @@ const path = require("path")
 const { GraphQLClient } = require("graphql-request")
 const parseGHUrl = require("parse-github-url")
 
+console.log("Reading gatsby-node")
+
 // Contentful Github repos
 // Gather data
 const githubApiClient = process.env.GITHUB_TOKEN
@@ -23,62 +25,57 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
    */
   switch (node.internal.type) {
     // This is the type of  node (similar to node.internal.type==="GraphQLSource")
-    case "ContentfulTool": {
-      
-       // Add field with Github Data to tool's Node
-    
-      async function getGithubData(owner, name) {
-        try {
-          const response = await githubApiClient.request(`
-            query {
-              repository(owner:"${owner}", name:"${name}") {
-                name
-                stargazers {
-                  totalCount
-                }
-                createdAt
-              }
-            }
-          `)
-          console.log("owner is " + owner)
-          return response
-        } catch (error) {
-          console.log("Cannot get data for Github repo: ", name)
-          return null
-        }
-      }
+    // case "ContentfulTool": {
+    //   // Add field with Github Data to tool's Node
 
-      // Try changing node.github to node.slug, as this is the GH url in Tool content model
-      const repoMeta = node.slug ? parseGHUrl(node.slug) : null
-      const repoData = await (repoMeta
-        ? getGithubData(repoMeta.owner, repoMeta.name)
-        : null)
+    //   async function getGithubData(owner, name) {
+    //     try {
+    //       const response = await githubApiClient.request(`
+    //         query {
+    //           repository(owner:"${owner}", name:"${name}") {
+    //             name
+    //             stargazers {
+    //               totalCount
+    //             }
+    //             createdAt
+    //           }
+    //         }
+    //       `)
+    //       console.log("owner is " + owner)
+    //       return response
+    //     } catch (error) {
+    //       console.log("Cannot get data for Github repo: ", name)
+    //       return null
+    //     }
+    //   }
 
-      //  Checking that repoMeta and repoData can be accessed from Contentful and Github
-      console.log("repoMeta is" + repoMeta)
-      console.log(JSON.stringify(repoMeta))
-      console.log("repoMeta.owner is " + repoMeta.owner)
-      console.log("repoMeta.name is" + repoMeta.name)
-      console.log("repoData is" + repoData)
-      console.log(JSON.stringify(repoData))
+    //   // Try changing node.github to node.slug, as this is the GH url in Tool content model
+    //   const repoMeta = node.slug ? parseGHUrl(node.slug) : null
+    //   const repoData = await (repoMeta
+    //     ? getGithubData(repoMeta.owner, repoMeta.name)
+    //     : null)
 
-      // Try some manual repoData code
+    //   //  Checking that repoMeta and repoData can be accessed from Contentful and Github
+    //   console.log("repoMeta is" + repoMeta)
+    //   console.log(JSON.stringify(repoMeta))
+    //   console.log("repoMeta.owner is " + repoMeta.owner)
+    //   console.log("repoMeta.name is" + repoMeta.name)
+    //   console.log("repoData is" + repoData)
+    //   console.log(JSON.stringify(repoData))
 
-      //Add field with data to repo's Node
+    //   // Try some manual repoData code
 
-      createNodeField({
-        node,
-        name: "githubData",
-        value: repoData,
-      })
-    
-  }
-    
-  //  Next case: add Netlify CMS tool, copied from above
+    //   //Add field with data to repo's Node
+
+    //   createNodeField({
+    //     node,
+    //     name: "githubData",
+    //     value: repoData,
+    //   })
+    // }
+
+    //  Next case: add Netlify CMS tool, copied from above
     case "MarkdownRemark": {
-
-
-
       async function getGithubData(owner, name) {
         try {
           const response = await githubApiClient.request(`
@@ -94,14 +91,17 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
           `)
           console.log("ncms owner is " + owner)
           return response
-        } catch(error) {
+        } catch (error) {
           console.log("Cannot get data for ncms Github repo: ", name)
           return null
         }
       }
+      // This is returning null
+      const repoMeta = node.frontmatter.slug ? parseGHUrl(node.frontmatter.slug) : null
+      console.log("The repoMeta node is " + JSON.stringify(node))
+      console.log("The node.slug is " + node.frontmatter.slug)
 
-      const repoMeta = node.slug ? parseGHUrl(node.slug): null
-      const repoData = await(repoMeta
+      const repoData = await (repoMeta
         ? getGithubData(repoMeta.owner, repoMeta.name)
         : null)
       // Checking that repoMeta and repoData can be accessed by NetlifyCMS and Github
@@ -119,7 +119,7 @@ exports.onCreateNode = async ({ node, actions, getNode, reporter }) => {
         value: repoData,
       })
     }
-}
+  }
 }
 
 exports.createPages = async ({ graphql, actions }) => {
