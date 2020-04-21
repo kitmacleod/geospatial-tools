@@ -7,7 +7,7 @@
   "scripts": {
     "build": "gatsby build",
     "clean": "rm -rf .cache",
-    "develop": "env-cmd -f .env gatsby develop",
+    "develop": "env-cmd -f .env.development gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "npm run develop",
     "serve": "gatsby serve",
